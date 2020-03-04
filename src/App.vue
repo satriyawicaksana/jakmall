@@ -1,28 +1,39 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <!-- <input type="checkbox" v-model="formObj.checked" @change="resetField" />
+    <InputBox v-model="formObj.dropshipperName" :disabled="formObj.checked" />
+    <input type="text" v-model="formObj.dropshipperName" :disabled="!formObj.checked" />-->
+    <div class="container">
+      <div class="stepper"></div>
+      <div class="form"></div>
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+//import InputBox from "./components/InputBox";
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
+    //InputBox,
+  },
+  data: function() {
+    return {
+      formObj: {
+        checked: true,
+        dropshipperName: "",
+        dropshipperNumber: ""
+      }
+    };
+  },
+  methods: {
+    resetField: function() {
+      this.formObj.dropshipperName = "";
+      this.formObj.dropshipperNumber = "";
+    }
   }
-}
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>
