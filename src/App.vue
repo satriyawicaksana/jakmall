@@ -23,7 +23,17 @@
           :active="navigationStatus[2].status"
         />
       </div>
-      <div class="form"></div>
+      <div class="form">
+        <div class="form__navigation">
+          <button>
+            <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" width="16">
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+            </svg>
+            <p>{{formObj.navigationText[activeStep]}}</p>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -48,7 +58,8 @@ export default {
       formObj: {
         checked: true,
         dropshipperName: "",
-        dropshipperNumber: ""
+        dropshipperNumber: "",
+        navigationText: ["Back to cart", "Back to delivery", "Go to homepage"]
       }
     };
   },
@@ -69,6 +80,7 @@ dark-green = #1BD97B;
 light-green = #E8FBF1;
 grey-accent = #eeeeee;
 grey-border = #cccccc;
+grey-font = #666;
 black = #000;
 
 @font-face {
@@ -158,7 +170,31 @@ html {
 @media (max-width: 600px) {
   .form {
     padding: 1rem;
-    padding-left: 5rem;
+    padding-left: 4rem;
+  }
+}
+
+.form__navigation {
+  padding: 0 5rem;
+
+  & button {
+    flexbox(row, flex-start, center);
+    padding: 0.5rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: grey-font;
+
+    & svg {
+      margin-right: 1rem;
+      fill: grey-font;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .form__navigation {
+    padding: 0;
   }
 }
 </style>
