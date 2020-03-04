@@ -40,4 +40,10 @@ orange-stepper = #FFE4B8;
   color: white;
   background-color: orange;
 }
+
+@media (max-width: 600px) {
+  p {
+    display: none;
+  }
+}
 </style>

@@ -87,6 +87,22 @@ html {
   font-size: 62.5%;
 }
 
+#app {
+  width: 100%;
+  min-height: 100vh;
+  background-color: ivory;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 90%;
+  height: 90%;
+  background-color: white;
+  margin: 5% 0 5% 0;
+}
+
 .stepper {
   display: flex;
   flex-direction: row;
@@ -96,6 +112,27 @@ html {
   height: 50px;
   background-color: ivory;
   border-radius: 25px;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@media (max-width: 1440px) {
+  .stepper {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .stepper {
+    position: fixed;
+    width: 50px;
+    height: 40%;
+    flex-direction: column;
+    left: 0;
+    top: 50%;
+    transform: translate(0, -50%);
+  }
 }
 
 .arrow {
@@ -105,5 +142,16 @@ html {
   border-top: none;
   border-left: none;
   transform: rotate(-45deg);
+}
+
+@media (max-width: 600px) {
+  .arrow {
+    transform: rotate(45deg);
+  }
+}
+
+.form {
+  width: 100%;
+  height: 1000px;
 }
 </style>
