@@ -76,6 +76,13 @@ black = #000;
   src: url('./assets/Inter-Medium.otf');
 }
 
+flexbox(dir = row, jus = center, ali = center) {
+  display: flex;
+  flex-direction: dir;
+  justify-content: jus;
+  align-items: ali;
+}
+
 *, *:before, *:after {
   margin: 0;
   padding: 0;
@@ -91,9 +98,7 @@ html {
   width: 100%;
   min-height: 100vh;
   background-color: ivory;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  flexbox();
 }
 
 .container {
@@ -104,11 +109,8 @@ html {
 }
 
 .stepper {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  width: 30%;
+  flexbox(row, space-around, center);
+  width: 45%;
   height: 50px;
   background-color: ivory;
   border-radius: 25px;
@@ -117,9 +119,9 @@ html {
   transform: translate(-50%, -50%);
 }
 
-@media (max-width: 1440px) {
+@media (max-width: 1200px) {
   .stepper {
-    width: 100%;
+    width: 70%;
   }
 }
 
@@ -151,7 +153,12 @@ html {
 }
 
 .form {
-  width: 100%;
-  height: 1000px;
+}
+
+@media (max-width: 600px) {
+  .form {
+    padding: 1rem;
+    padding-left: 5rem;
+  }
 }
 </style>
