@@ -34,7 +34,26 @@
           </button>
         </div>
         <div class="form__container">
-          <div class="form__container_left"></div>
+          <div class="form__container_left">
+            <div class="delivery">
+              <div class="delivery__top">
+                <HeaderText title="Delivery details" />
+                <div class="dropshipper">
+                  <label class="dropshipper__label" for="dropship">
+                    <input
+                      type="checkbox"
+                      id="dropship"
+                      v-model="formObj.checked"
+                      @change="resetField"
+                    />
+                    <span class="checkmark"></span>
+                    Send as dropshipper
+                  </label>
+                </div>
+              </div>
+              <div class="delivery__bot"></div>
+            </div>
+          </div>
           <div class="form__container_right">
             <div class="summary__top">
               <h3>Summary</h3>
@@ -68,6 +87,7 @@ import NavigationItem from "./components/NavigationItem";
 import SummaryBox from "./components/SummaryBox";
 import ListCost from "./components/ListCost";
 import OrangeButton from "./components/OrangeButton";
+import HeaderText from "./components/HeaderText";
 export default {
   name: "App",
   components: {
@@ -75,7 +95,8 @@ export default {
     NavigationItem,
     SummaryBox,
     ListCost,
-    OrangeButton
+    OrangeButton,
+    HeaderText
   },
   data: function() {
     return {
@@ -152,11 +173,11 @@ flexbox(dir = row, jus = center, ali = center) {
 
 html {
   font-size: 62.5%;
-  color: grey-font;
 }
 
 html, body, button {
   font-family: inter-medium;
+  color: grey-font;
 }
 
 #app {
@@ -232,7 +253,7 @@ html, body, button {
 .form__navigation {
   & button {
     flexbox(row, flex-start, center);
-    padding: 1rem 0.5rem;
+    padding: 1rem 0;
     border: none;
     background: transparent;
     cursor: pointer;
@@ -258,6 +279,60 @@ html, body, button {
 .form__container_left {
   width: 70%;
   height: 100%;
+}
+
+.delivery__top {
+  flexbox(row, space-between, center);
+}
+
+.dropshipper {
+  margin-right: 2rem;
+  position: relative;
+
+  & label {
+    width: 170px;
+    height: 20px;
+    font-size: 1.4rem;
+    flexbox(row, flex-end, center);
+  }
+
+  & input {
+    cursor: pointer;
+    height: 0;
+    width: 0;
+
+    &:checked ~ .checkmark {
+      border-color: dark-green;
+    }
+
+    &:checked ~ .checkmark:after {
+      display: block;
+    }
+  }
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  border: 2px solid grey-accent;
+}
+
+.checkmark:after {
+  content: '';
+  display: none;
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid dark-green;
+  border-width: 0 2px 2px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 
 .form__container_right {
