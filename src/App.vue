@@ -43,10 +43,12 @@
               <SummaryBox title="Delivery Estimation" detail="today By GO-SEND" />
             </div>
             <div class="summary__bot">
-              <div class="summary__bot_cost">
-                <p class="summary__bot_title">fdsa</p>
-                <p class="summary__bot_amount">10000</p>
-              </div>
+              <ListCost
+                v-for="list in listCost"
+                :key="list.title"
+                :title="list.title"
+                :amount="list.amount"
+              />
             </div>
           </div>
         </div>
@@ -59,12 +61,14 @@
 //import InputBox from "./components/InputBox";
 import NavigationItem from "./components/NavigationItem";
 import SummaryBox from "./components/SummaryBox";
+import ListCost from "./components/ListCost";
 export default {
   name: "App",
   components: {
     //InputBox,
     NavigationItem,
-    SummaryBox
+    SummaryBox,
+    ListCost
   },
   data: function() {
     return {
@@ -252,5 +256,9 @@ html {
     font-size: 2.5rem;
     font-family: inter-bold;
   }
+}
+
+.summary__bot {
+  width: 100%;
 }
 </style>
