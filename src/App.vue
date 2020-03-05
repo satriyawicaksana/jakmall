@@ -125,11 +125,14 @@ export default {
         /* style: "currency",
         currency: "IDR", */
         minimumFractionDigits: 0
-      }).format(this.listCost.reduce((a, b) => a.amount + b.amount));
+      }).format(this.listCost.reduce((a, b) => a + b.amount, 0));
     }
   },
   methods: {
     resetField: function() {
+      if (this.formObj.checked)
+        this.listCost.push({ title: "Dropshipping Fee", amount: 5900 });
+      else this.listCost.pop();
       this.formObj.dropshipperName = "";
       this.formObj.dropshipperNumber = "";
     }
