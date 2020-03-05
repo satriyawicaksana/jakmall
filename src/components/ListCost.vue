@@ -11,9 +11,9 @@ export default {
   props: ["title", "amount"],
   computed: {
     formatAmount: function() {
-      return new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
+      return new Intl.NumberFormat("en-EN", {
+        /* style: "currency",
+        currency: "IDR", */
         minimumFractionDigits: 0
       }).format(this.amount);
     }

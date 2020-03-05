@@ -49,7 +49,11 @@
                 :title="list.title"
                 :amount="list.amount"
               />
-              <OrangeButton :title="formObj.buttonText[activeStep]" />
+              <div class="totalamount">
+                <p class="totalamount__title">Total</p>
+                <p class="totalamount__amount">{{totalAmount}}</p>
+              </div>
+              <OrangeButton v-if="activeStep!=2" :title="formObj.buttonText[activeStep]" />
             </div>
           </div>
         </div>
@@ -93,6 +97,15 @@ export default {
         { title: "Dropshipping Fee", amount: 5900 }
       ]
     };
+  },
+  computed: {
+    totalAmount: function() {
+      return new Intl.NumberFormat("en-EN", {
+        /* style: "currency",
+        currency: "IDR", */
+        minimumFractionDigits: 0
+      }).format(this.listCost.reduce((a, b) => a.amount + b.amount));
+    }
   },
   methods: {
     resetField: function() {
@@ -267,5 +280,13 @@ html, body, button {
 
 .summary__bot {
   width: 100%;
+}
+
+.totalamount {
+  flexbox(row, space-between, center);
+  margin: 1.5rem 0;
+  color: orange;
+  font-family: inter-bold;
+  font-size: 2rem;
 }
 </style>
