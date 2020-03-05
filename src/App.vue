@@ -49,6 +49,7 @@
                 :title="list.title"
                 :amount="list.amount"
               />
+              <OrangeButton :title="formObj.buttonText[activeStep]" />
             </div>
           </div>
         </div>
@@ -62,13 +63,15 @@
 import NavigationItem from "./components/NavigationItem";
 import SummaryBox from "./components/SummaryBox";
 import ListCost from "./components/ListCost";
+import OrangeButton from "./components/OrangeButton";
 export default {
   name: "App",
   components: {
     //InputBox,
     NavigationItem,
     SummaryBox,
-    ListCost
+    ListCost,
+    OrangeButton
   },
   data: function() {
     return {
@@ -82,7 +85,8 @@ export default {
         checked: true,
         dropshipperName: "",
         dropshipperNumber: "",
-        navigationText: ["Back to cart", "Back to delivery", "Go to homepage"]
+        navigationText: ["Back to cart", "Back to delivery", "Go to homepage"],
+        buttonText: ["Continue to Payment", "Pay with e-Wallet"]
       },
       listCost: [
         { title: "Cost of goods", amount: 500000 },
@@ -134,9 +138,12 @@ flexbox(dir = row, jus = center, ali = center) {
 }
 
 html {
-  font-family: inter-medium;
   font-size: 62.5%;
   color: grey-font;
+}
+
+html, body, button {
+  font-family: inter-medium;
 }
 
 #app {
