@@ -33,6 +33,23 @@
             <p>{{formObj.navigationText[activeStep]}}</p>
           </button>
         </div>
+        <div class="form__container">
+          <div class="form__container_left"></div>
+          <div class="form__container_right">
+            <div class="summary__top">
+              <h3>Summary</h3>
+              <p>10 items purchased</p>
+              <SummaryBox title="Delivery Estimation" detail="today By GO-SEND" />
+              <SummaryBox title="Delivery Estimation" detail="today By GO-SEND" />
+            </div>
+            <div class="summary__bot">
+              <div class="summary__bot_cost">
+                <p class="summary__bot_title">fdsa</p>
+                <p class="summary__bot_amount">10000</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -41,11 +58,13 @@
 <script>
 //import InputBox from "./components/InputBox";
 import NavigationItem from "./components/NavigationItem";
+import SummaryBox from "./components/SummaryBox";
 export default {
   name: "App",
   components: {
     //InputBox,
-    NavigationItem
+    NavigationItem,
+    SummaryBox
   },
   data: function() {
     return {
@@ -60,7 +79,11 @@ export default {
         dropshipperName: "",
         dropshipperNumber: "",
         navigationText: ["Back to cart", "Back to delivery", "Go to homepage"]
-      }
+      },
+      listCost: [
+        { title: "Cost of goods", amount: 500000 },
+        { title: "Dropshipping Fee", amount: 5900 }
+      ]
     };
   },
   methods: {
@@ -88,6 +111,11 @@ black = #000;
   src: url('./assets/Inter-Medium.otf');
 }
 
+@font-face {
+  font-family: inter-bold;
+  src: url('./assets/Inter-Bold.otf');
+}
+
 flexbox(dir = row, jus = center, ali = center) {
   display: flex;
   flex-direction: dir;
@@ -104,6 +132,7 @@ flexbox(dir = row, jus = center, ali = center) {
 html {
   font-family: inter-medium;
   font-size: 62.5%;
+  color: grey-font;
 }
 
 #app {
@@ -115,9 +144,9 @@ html {
 
 .container {
   width: 90%;
-  height: 90%;
+  height: 90vh;
   background-color: white;
-  margin: 5% 0 5% 0;
+  margin: 5vh 0;
 }
 
 .stepper {
@@ -165,6 +194,8 @@ html {
 }
 
 .form {
+  height: 100%;
+  padding: 2rem 3rem;
 }
 
 @media (max-width: 600px) {
@@ -175,15 +206,12 @@ html {
 }
 
 .form__navigation {
-  padding: 0 5rem;
-
   & button {
     flexbox(row, flex-start, center);
-    padding: 0.5rem;
+    padding: 1rem 0.5rem;
     border: none;
     background: transparent;
     cursor: pointer;
-    color: grey-font;
 
     & svg {
       margin-right: 1rem;
@@ -195,6 +223,34 @@ html {
 @media (max-width: 600px) {
   .form__navigation {
     padding: 0;
+  }
+}
+
+.form__container {
+  flexbox();
+  height: calc(100% - 36px);
+}
+
+.form__container_left {
+  width: 70%;
+  height: 100%;
+}
+
+.form__container_right {
+  width: 30%;
+  height: 100%;
+  padding-left: 2rem;
+  border-left: 2px solid ivory;
+  flexbox(column, space-between, flex-start);
+}
+
+.summary__top {
+  width: 100%;
+
+  & h3 {
+    color: orange;
+    font-size: 2.5rem;
+    font-family: inter-bold;
   }
 }
 </style>
