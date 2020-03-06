@@ -1,14 +1,17 @@
 <template>
-  <div class="inputbox" :class="{inputvalid: isValid, inputinvalid: !isValid && isFilled}">
+  <div
+    class="inputbox"
+    :class="{inputvalid: isValid, inputinvalid: !isValid && (isFilled || (isEntered && required))}"
+  >
     <input
       :id="id"
       :type="type"
       v-model="newValue"
-      @input="checkValidation"
-      :disabled="disabled"
-      :class="{inputfilled: isFilled && !disabled}"
+      @focusout="checkValidation"
+      :disabled="disabled && dropshipperField"
+      :class="{inputfilled: isFilled && (!disabled || !dropshipperField)}"
     />
-    <label :for="id" :class="{labelfilled: isFilled && !disabled }">{{id}}</label>
+    <label :for="id" :class="{labelfilled: isFilled && (!disabled || !dropshipperField) }">{{id}}</label>
     <div class="icon">
       <svg
         class="green hide"
@@ -23,7 +26,7 @@
       </svg>
       <svg
         class="orange hide"
-        :class="{displayed: !isValid && isFilled}"
+        :class="{displayed: !isValid && (isFilled || (isEntered && required))}"
         @click="resetField"
         xmlns="http://www.w3.org/2000/svg"
         height="24"
@@ -42,25 +45,28 @@
 <script>
 export default {
   name: "InputBox",
-  props: ["id", "type", "disabled", "pattern"],
+  props: ["id", "type", "disabled", "pattern", "dropshipperField", "required"],
   data: function() {
     return {
       newValue: "",
       isValid: null,
-      isFilled: false
+      isFilled: false,
+      isEntered: false
     };
   },
   watch: {
     disabled: function() {
-      this.resetField();
+      this.dropshipperField ? this.resetField() : "";
     }
   },
   methods: {
     checkValidation: function() {
+      this.isEntered = true;
       this.newValue.length ? (this.isFilled = true) : (this.isFilled = false);
       this.pattern.test(this.newValue)
         ? (this.isValid = true)
         : (this.isValid = false);
+      console.log(this.required);
       this.$emit("change-value", this.newValue);
     },
     resetField: function() {
@@ -86,6 +92,7 @@ orange = #FF8A00;
   position: relative;
   height: 6rem;
   border: 1px solid grey-border;
+  margin: 1rem 0;
 }
 
 input {

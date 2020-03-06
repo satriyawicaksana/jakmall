@@ -52,14 +52,44 @@
                 </div>
               </div>
               <div class="delivery__bot">
-                <div class="delivery__bot_left delivery__bot_child"></div>
+                <div class="delivery__bot_left delivery__bot_child">
+                  <InputBox
+                    id="Email"
+                    type="email"
+                    :disabled="!formObj.checked"
+                    @change-value="formObj.email = $event"
+                    :pattern="/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/"
+                    :dropshipperField="false"
+                    :required="false"
+                  />
+                  <InputBox
+                    id="Phone Number"
+                    type="tel"
+                    :disabled="!formObj.checked"
+                    @change-value="formObj.number = $event"
+                    :pattern="/^[-+()\d]{6,20}$/"
+                    :dropshipperField="false"
+                    :required="false"
+                  />
+                  <InputBox
+                    id="Delivery address"
+                    type="text"
+                    :disabled="!formObj.checked"
+                    @change-value="formObj.address = $event"
+                    :pattern="/[\s\S]+/"
+                    :dropshipperField="false"
+                    :required="true"
+                  />
+                </div>
                 <div class="delivery__bot_right delivery__bot_child">
                   <InputBox
                     id="Dropshipper name"
                     type="text"
                     :disabled="!formObj.checked"
                     @change-value="formObj.dropshipperName = $event"
-                    :pattern="/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/"
+                    :pattern="/[\w ]/"
+                    :dropshipperField="true"
+                    :required="false"
                   />
                   <InputBox
                     id="Dropshipper number"
@@ -67,8 +97,9 @@
                     :disabled="!formObj.checked"
                     @change-value="formObj.dropshipperNumber = $event"
                     :pattern="/^[-+()\d]{6,20}$/"
+                    :dropshipperField="true"
+                    :required="false"
                   />
-                  <!-- <InputBox v-model="formObj.dropshipperNumber" :disabled="formObj.checked" /> -->
                 </div>
               </div>
             </div>
@@ -127,6 +158,9 @@ export default {
       ],
       formObj: {
         checked: true,
+        email: "",
+        number: "",
+        address: "",
         dropshipperName: "",
         dropshipperNumber: "",
         navigationText: ["Back to cart", "Back to delivery", "Go to homepage"],
