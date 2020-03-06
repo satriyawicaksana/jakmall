@@ -51,7 +51,26 @@
                   </label>
                 </div>
               </div>
-              <div class="delivery__bot"></div>
+              <div class="delivery__bot">
+                <div class="delivery__bot_left delivery__bot_child"></div>
+                <div class="delivery__bot_right delivery__bot_child">
+                  <InputBox
+                    id="Dropshipper name"
+                    type="text"
+                    :disabled="!formObj.checked"
+                    @change-value="formObj.dropshipperName = $event"
+                    :pattern="/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/"
+                  />
+                  <InputBox
+                    id="Dropshipper number"
+                    type="tel"
+                    :disabled="!formObj.checked"
+                    @change-value="formObj.dropshipperNumber = $event"
+                    :pattern="/^[-+()\d]{6,20}$/"
+                  />
+                  <!-- <InputBox v-model="formObj.dropshipperNumber" :disabled="formObj.checked" /> -->
+                </div>
+              </div>
             </div>
           </div>
           <div class="form__container_right">
@@ -82,7 +101,7 @@
 </template>
 
 <script>
-//import InputBox from "./components/InputBox";
+import InputBox from "./components/InputBox";
 import NavigationItem from "./components/NavigationItem";
 import SummaryBox from "./components/SummaryBox";
 import ListCost from "./components/ListCost";
@@ -91,7 +110,7 @@ import HeaderText from "./components/HeaderText";
 export default {
   name: "App",
   components: {
-    //InputBox,
+    InputBox,
     NavigationItem,
     SummaryBox,
     ListCost,
@@ -135,6 +154,9 @@ export default {
       else this.listCost.pop();
       this.formObj.dropshipperName = "";
       this.formObj.dropshipperNumber = "";
+    },
+    testFunction: function(newVal) {
+      this.formObj.dropshipperName = newVal;
     }
   }
 };
@@ -178,7 +200,7 @@ html {
   font-size: 62.5%;
 }
 
-html, body, button {
+html, body, input, button {
   font-family: inter-medium;
   color: grey-font;
 }
@@ -284,12 +306,17 @@ html, body, button {
   height: 100%;
 }
 
+.delivery {
+  width: 100%;
+  height: 100%;
+}
+
 .delivery__top {
   flexbox(row, space-between, center);
 }
 
 .dropshipper {
-  margin-right: 2rem;
+  margin-right: 3rem;
   position: relative;
 
   & label {
@@ -336,6 +363,26 @@ html, body, button {
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
+}
+
+.delivery__bot {
+  height: calc(100% - 42px);
+  padding-top: 2rem;
+  flexbox();
+}
+
+.delivery__bot_child {
+  padding-right: 3rem;
+}
+
+.delivery__bot_left {
+  width: 60%;
+  height: 100%;
+}
+
+.delivery__bot_right {
+  width: 40%;
+  height: 100%;
 }
 
 .form__container_right {
