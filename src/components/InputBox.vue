@@ -1,11 +1,9 @@
 <template>
-  <div
-    class="inputbox"
-    :class="{inputvalid: isValid, inputinvalid: !isValid && (isFilled || (isEntered && required))}"
-  >
+  <div class="inputbox" :class="{inputvalid: isValid, inputinvalid: !isValid && isFilled}">
     <input
       :id="id"
       :type="type"
+      :value="value"
       v-model="newValue"
       @focusout="checkValidation"
       :disabled="disabled && dropshipperField"
@@ -26,7 +24,7 @@
       </svg>
       <svg
         class="orange hide"
-        :class="{displayed: !isValid && (isFilled || (isEntered && required))}"
+        :class="{displayed: !isValid && isFilled}"
         @click="resetField"
         xmlns="http://www.w3.org/2000/svg"
         height="24"
@@ -45,13 +43,12 @@
 <script>
 export default {
   name: "InputBox",
-  props: ["id", "type", "disabled", "pattern", "dropshipperField", "required"],
+  props: ["id", "value", "type", "disabled", "pattern", "dropshipperField"],
   data: function() {
     return {
       newValue: "",
-      isValid: null,
-      isFilled: false,
-      isEntered: false
+      isValid: false,
+      isFilled: false
     };
   },
   watch: {
@@ -61,13 +58,10 @@ export default {
   },
   methods: {
     checkValidation: function() {
-      this.isEntered = true;
       this.newValue.length ? (this.isFilled = true) : (this.isFilled = false);
       this.pattern.test(this.newValue)
-        ? (this.isValid = true)
-        : (this.isValid = false);
-      console.log(this.required);
-      this.$emit("change-value", this.newValue);
+        ? ((this.isValid = true), this.$emit("change-value", this.newValue))
+        : ((this.isValid = false), this.$emit("change-value", ""));
     },
     resetField: function() {
       this.newValue = "";

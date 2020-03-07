@@ -1,5 +1,5 @@
 <template>
-  <button>{{title}}</button>
+  <button @click="$emit('next-step')">{{title}}</button>
 </template>
 
 <script>

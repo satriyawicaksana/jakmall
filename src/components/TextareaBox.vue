@@ -6,7 +6,7 @@
       rows="10"
       :maxlength="maxlength"
       required
-      :class="{inputvalid: isValid, inputinvalid: !isValid && isEntered}"
+      :class="{inputvalid: isValid, inputinvalid: !isValid && isEntered }"
       v-model="newValue"
       @input="reduceChar"
       @focusout="focusOut"
@@ -53,7 +53,7 @@ export default {
       isEntered: false
     };
   },
-  props: ["maxlength"],
+  props: ["maxlength", "incorrect"],
   methods: {
     reduceChar: function() {
       this.remainingChar = 120 - this.newValue.length;
@@ -61,6 +61,9 @@ export default {
     },
     focusOut: function() {
       this.isEntered = true;
+      this.isValid
+        ? this.$emit("change-value", this.newValue)
+        : this.$emit("change-value", "");
     }
   }
 };
