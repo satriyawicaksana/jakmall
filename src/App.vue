@@ -124,9 +124,24 @@
               <div class="paymentfield">
                 <HeaderText title="Payment" />
                 <div class="paymentfield__container">
-                  <SelectionBox title="e-wallet" amount="1500000" />
-                  <SelectionBox title="Bank Transfer" amount />
-                  <SelectionBox title="Virtual Account" amount />
+                  <SelectionBox
+                    title="e-Wallet"
+                    amount="1500000"
+                    @change-value="paymentHandler($event, 0)"
+                    :selected="this.formObj.paymentMethod == 0"
+                  />
+                  <SelectionBox
+                    title="Bank Transfer"
+                    amount
+                    @change-value="paymentHandler($event, 1)"
+                    :selected="this.formObj.paymentMethod == 1"
+                  />
+                  <SelectionBox
+                    title="Virtual Account"
+                    amount
+                    @change-value="paymentHandler($event, 2)"
+                    :selected="this.formObj.paymentMethod == 2"
+                  />
                 </div>
               </div>
             </div>
@@ -206,6 +221,7 @@ export default {
         dropshipperName: "",
         dropshipperNumber: "",
         shipmentMethod: -1,
+        paymentMethod: -1,
         navigationText: ["Back to cart", "Back to delivery", "Go to homepage"],
         buttonText: ["Continue to Payment", "Pay with e-Wallet"]
       },
@@ -253,13 +269,10 @@ export default {
       this.formObj.dropshipperNumber = "";
     },
     shipmentHandler: function(e, shipmentMethod) {
-      this.formObj.shipmentMethod = e;
       let shipmentIndex = this.listCost.findIndex(data => data.id == 3);
       let shipmentIndexSummary = this.summaryBox.findIndex(
-        data => data.id == 1
+        data => data.id == 0
       );
-      console.log(shipmentIndex);
-
       shipmentIndex != -1
         ? (this.listCost.splice(shipmentIndex, 1),
           this.listCost.push({
@@ -300,6 +313,19 @@ export default {
           this.summaryBox.push(newDeliveryObj);
         }
       }
+    },
+    paymentHandler: function(e, paymentMethod) {
+      this.formObj.paymentMethod = paymentMethod;
+      let newPaymentObj = { id: 1, title: "Payment method" };
+      newPaymentObj.detail = e.title;
+      let paymentIndexSummary = this.summaryBox.findIndex(data => data.id == 1);
+      if (paymentIndexSummary != -1) {
+        this.summaryBox.splice(paymentIndexSummary, 1);
+        this.summaryBox.push(newPaymentObj);
+      } else {
+        this.summaryBox.push(newPaymentObj);
+      }
+      this.formObj.buttonText[1] = "Pay with " + e.title;
     },
     nextStep: function() {
       /* 
