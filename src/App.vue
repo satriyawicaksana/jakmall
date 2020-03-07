@@ -25,7 +25,7 @@
       </div>
       <div class="form">
         <div class="form__navigation">
-          <button>
+          <button @click="prevStep">
             <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" width="16">
               <path d="M0 0h24v24H0V0z" fill="none" />
               <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
@@ -35,7 +35,7 @@
         </div>
         <div class="form__container">
           <div class="form__container_left">
-            <div class="delivery">
+            <div class="delivery" v-show="activeStep==0">
               <div class="delivery__top">
                 <HeaderText title="Delivery details" />
                 <div class="dropshipper">
@@ -69,7 +69,11 @@
                     :pattern="/^[-+()\d]{6,20}$/"
                     :dropshipperField="false"
                   />
-                  <TextareaBox :maxlength="120" />
+                  <TextareaBox
+                    :maxlength="120"
+                    @change-value="formObj.address = $event"
+                    :incorrect="formObj.incorrect"
+                  />
                 </div>
                 <div class="delivery__bot_right delivery__bot_child">
                   <InputBox
@@ -79,6 +83,7 @@
                     @change-value="formObj.dropshipperName = $event"
                     :pattern="/[\w ]/"
                     :dropshipperField="true"
+                    :incorrect="formObj.incorrect"
                   />
                   <InputBox
                     id="Dropshipper number"
@@ -87,7 +92,26 @@
                     @change-value="formObj.dropshipperNumber = $event"
                     :pattern="/^[-+()\d]{6,20}$/"
                     :dropshipperField="true"
+                    :incorrect="formObj.incorrect"
                   />
+                </div>
+              </div>
+            </div>
+            <div class="payment" v-show="activeStep==1">
+              <div class="shipmentfield">
+                <HeaderText title="Shipment" />
+                <div class="shipmentfield__container">
+                  <SelectionBox title="GO-SEND" amount="15000" />
+                  <SelectionBox title="JNE" amount="9000" />
+                  <SelectionBox title="Personal Courier" amount="29000" />
+                </div>
+              </div>
+              <div class="paymentfield">
+                <HeaderText title="Payment" />
+                <div class="paymentfield__container">
+                  <SelectionBox title="e-wallet" amount="1500000" />
+                  <SelectionBox title="Bank Transfer" amount />
+                  <SelectionBox title="Virtual Account" amount />
                 </div>
               </div>
             </div>
@@ -110,7 +134,11 @@
                 <p class="totalamount__title">Total</p>
                 <p class="totalamount__amount">{{totalAmount}}</p>
               </div>
-              <OrangeButton v-if="activeStep!=2" :title="formObj.buttonText[activeStep]" />
+              <OrangeButton
+                v-if="activeStep!=2"
+                :title="formObj.buttonText[activeStep]"
+                @next-step="nextStep"
+              />
             </div>
           </div>
         </div>
@@ -127,6 +155,7 @@ import ListCost from "./components/ListCost";
 import OrangeButton from "./components/OrangeButton";
 import HeaderText from "./components/HeaderText";
 import TextareaBox from "./components/TextareaBox";
+import SelectionBox from "./components/SelectionBox";
 export default {
   name: "App",
   components: {
@@ -136,11 +165,12 @@ export default {
     ListCost,
     OrangeButton,
     HeaderText,
-    TextareaBox
+    TextareaBox,
+    SelectionBox
   },
   data: function() {
     return {
-      activeStep: 0,
+      activeStep: 1,
       navigationStatus: [
         { id: 0, title: "Delivery", status: true },
         { id: 1, title: "Payment", status: false },
@@ -148,11 +178,13 @@ export default {
       ],
       formObj: {
         checked: true,
+        incorrect: false,
         email: "",
         number: "",
         address: "",
         dropshipperName: "",
         dropshipperNumber: "",
+        shipmentMethod: 0,
         navigationText: ["Back to cart", "Back to delivery", "Go to homepage"],
         buttonText: ["Continue to Payment", "Pay with e-Wallet"]
       },
@@ -172,6 +204,25 @@ export default {
     }
   },
   methods: {
+    resetForm: function() {
+      // MASIH SALAH GAK BISA RESET INPUT VALUE NYA
+      this.activeStep = 0;
+      this.listCost = [
+        { title: "Cost of goods", amount: 500000 },
+        { title: "Dropshipping Fee", amount: 5900 }
+      ];
+      this.formObj = {
+        checked: true,
+        incorrect: false,
+        email: "",
+        number: "",
+        address: "",
+        dropshipperName: "",
+        dropshipperNumber: "",
+        navigationText: ["Back to cart", "Back to delivery", "Go to homepage"],
+        buttonText: ["Continue to Payment", "Pay with e-Wallet"]
+      };
+    },
     resetField: function() {
       if (this.formObj.checked)
         this.listCost.push({ title: "Dropshipping Fee", amount: 5900 });
@@ -179,8 +230,27 @@ export default {
       this.formObj.dropshipperName = "";
       this.formObj.dropshipperNumber = "";
     },
-    testFunction: function(newVal) {
-      this.formObj.dropshipperName = newVal;
+    nextStep: function() {
+      /* 
+        CHECK VALIDITY LATER
+
+      this.formObj.address
+        ? (this.formObj.incorrect = false)
+        : (this.formObj.incorrect = true); */
+      /* this.formObj.checked &&
+      !this.formObj.dropshipperName &&
+      !this.formObj.dropshipperNumber
+        ? (this.formObj.incorrect = true)
+        : (this.formObj.incorrect = false); */
+      this.activeStep++;
+    },
+    prevStep: function() {
+      this.activeStep
+        ? this.activeStep == 2
+          ? // MASIH SALAH GAK BISA RESET INPUT VALUE NYA
+            this.resetForm()
+          : this.activeStep--
+        : "";
     }
   }
 };
@@ -407,6 +477,11 @@ html, body, input, textarea, button {
 .delivery__bot_right {
   width: 40%;
   height: 100%;
+}
+
+.shipmentfield__container, .paymentfield__container {
+  flexbox(row, flex-start, center);
+  margin: 3rem 0 6rem 0;
 }
 
 .form__container_right {
