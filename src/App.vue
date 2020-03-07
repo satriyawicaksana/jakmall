@@ -60,7 +60,6 @@
                     @change-value="formObj.email = $event"
                     :pattern="/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/"
                     :dropshipperField="false"
-                    :required="false"
                   />
                   <InputBox
                     id="Phone Number"
@@ -69,17 +68,8 @@
                     @change-value="formObj.number = $event"
                     :pattern="/^[-+()\d]{6,20}$/"
                     :dropshipperField="false"
-                    :required="false"
                   />
-                  <InputBox
-                    id="Delivery address"
-                    type="text"
-                    :disabled="!formObj.checked"
-                    @change-value="formObj.address = $event"
-                    :pattern="/[\s\S]+/"
-                    :dropshipperField="false"
-                    :required="true"
-                  />
+                  <TextareaBox :maxlength="120" />
                 </div>
                 <div class="delivery__bot_right delivery__bot_child">
                   <InputBox
@@ -89,7 +79,6 @@
                     @change-value="formObj.dropshipperName = $event"
                     :pattern="/[\w ]/"
                     :dropshipperField="true"
-                    :required="false"
                   />
                   <InputBox
                     id="Dropshipper number"
@@ -98,7 +87,6 @@
                     @change-value="formObj.dropshipperNumber = $event"
                     :pattern="/^[-+()\d]{6,20}$/"
                     :dropshipperField="true"
-                    :required="false"
                   />
                 </div>
               </div>
@@ -138,6 +126,7 @@ import SummaryBox from "./components/SummaryBox";
 import ListCost from "./components/ListCost";
 import OrangeButton from "./components/OrangeButton";
 import HeaderText from "./components/HeaderText";
+import TextareaBox from "./components/TextareaBox";
 export default {
   name: "App",
   components: {
@@ -146,7 +135,8 @@ export default {
     SummaryBox,
     ListCost,
     OrangeButton,
-    HeaderText
+    HeaderText,
+    TextareaBox
   },
   data: function() {
     return {
@@ -234,7 +224,7 @@ html {
   font-size: 62.5%;
 }
 
-html, body, input, button {
+html, body, input, textarea, button {
   font-family: inter-medium;
   color: grey-font;
 }
