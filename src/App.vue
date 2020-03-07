@@ -101,9 +101,24 @@
               <div class="shipmentfield">
                 <HeaderText title="Shipment" />
                 <div class="shipmentfield__container">
-                  <SelectionBox title="GO-SEND" amount="15000" />
-                  <SelectionBox title="JNE" amount="9000" />
-                  <SelectionBox title="Personal Courier" amount="29000" />
+                  <SelectionBox
+                    title="GO-SEND"
+                    amount="15000"
+                    @change-value="shipmentHandler($event, 0)"
+                    :selected="this.formObj.shipmentMethod == 0"
+                  />
+                  <SelectionBox
+                    title="JNE"
+                    amount="9000"
+                    @change-value="shipmentHandler($event, 1)"
+                    :selected="this.formObj.shipmentMethod == 1"
+                  />
+                  <SelectionBox
+                    title="Personal Courier"
+                    amount="29000"
+                    @change-value="shipmentHandler($event, 2)"
+                    :selected="this.formObj.shipmentMethod == 2"
+                  />
                 </div>
               </div>
               <div class="paymentfield">
@@ -120,8 +135,14 @@
             <div class="summary__top">
               <h3>Summary</h3>
               <p>10 items purchased</p>
-              <SummaryBox title="Delivery Estimation" detail="today By GO-SEND" />
-              <SummaryBox title="Delivery Estimation" detail="today By GO-SEND" />
+              <SummaryBox
+                v-for="item in summaryBox"
+                :key="item.id"
+                :title="item.title"
+                :detail="item.detail"
+              />
+              <!-- <SummaryBox title="Delivery Estimation" detail="today By GO-SEND" />
+              <SummaryBox title="Delivery Estimation" detail="today By GO-SEND" />-->
             </div>
             <div class="summary__bot">
               <ListCost
@@ -184,14 +205,15 @@ export default {
         address: "",
         dropshipperName: "",
         dropshipperNumber: "",
-        shipmentMethod: 0,
+        shipmentMethod: -1,
         navigationText: ["Back to cart", "Back to delivery", "Go to homepage"],
         buttonText: ["Continue to Payment", "Pay with e-Wallet"]
       },
       listCost: [
-        { title: "Cost of goods", amount: 500000 },
-        { title: "Dropshipping Fee", amount: 5900 }
-      ]
+        { id: 1, title: "Cost of goods", amount: 500000 },
+        { id: 2, title: "Dropshipping Fee", amount: 5900 }
+      ],
+      summaryBox: []
     };
   },
   computed: {
@@ -230,6 +252,55 @@ export default {
       this.formObj.dropshipperName = "";
       this.formObj.dropshipperNumber = "";
     },
+    shipmentHandler: function(e, shipmentMethod) {
+      this.formObj.shipmentMethod = e;
+      let shipmentIndex = this.listCost.findIndex(data => data.id == 3);
+      let shipmentIndexSummary = this.summaryBox.findIndex(
+        data => data.id == 1
+      );
+      console.log(shipmentIndex);
+
+      shipmentIndex != -1
+        ? (this.listCost.splice(shipmentIndex, 1),
+          this.listCost.push({
+            id: 3,
+            title: e.title + " shipment",
+            amount: Number(e.amount)
+          }))
+        : this.listCost.push({
+            id: 3,
+            title: e.title + " shipment",
+            amount: Number(e.amount)
+          });
+
+      this.formObj.shipmentMethod = shipmentMethod;
+      let newDeliveryObj = { id: 0, title: "Delivery estimation" };
+      if (shipmentIndexSummary != -1) {
+        this.summaryBox.splice(shipmentIndexSummary, 1);
+        if (shipmentMethod == 0) {
+          newDeliveryObj.detail = "today by GO-SEND";
+          this.summaryBox.push(newDeliveryObj);
+        } else if (shipmentMethod == 1) {
+          newDeliveryObj.detail = "2 days by JNE";
+          this.summaryBox.push(newDeliveryObj);
+        } else if (shipmentMethod == 2) {
+          newDeliveryObj.detail = "1 day by Personal Courier";
+          this.summaryBox.push(newDeliveryObj);
+        }
+      } else {
+        this.summaryBox.splice(shipmentIndexSummary, 1);
+        if (shipmentMethod == 0) {
+          newDeliveryObj.detail = "today by GO-SEND";
+          this.summaryBox.push(newDeliveryObj);
+        } else if (shipmentMethod == 1) {
+          newDeliveryObj.detail = "2 days by JNE";
+          this.summaryBox.push(newDeliveryObj);
+        } else if (shipmentMethod == 2) {
+          newDeliveryObj.detail = "1 day by Personal Courier";
+          this.summaryBox.push(newDeliveryObj);
+        }
+      }
+    },
     nextStep: function() {
       /* 
         CHECK VALIDITY LATER
@@ -243,8 +314,11 @@ export default {
         ? (this.formObj.incorrect = true)
         : (this.formObj.incorrect = false); */
       this.activeStep++;
+      this.navigationStatus[this.activeStep].status = true;
     },
     prevStep: function() {
+      this.navigationStatus[this.activeStep].status = false;
+      // Menu masih salah saat kembali page 1
       this.activeStep
         ? this.activeStep == 2
           ? // MASIH SALAH GAK BISA RESET INPUT VALUE NYA

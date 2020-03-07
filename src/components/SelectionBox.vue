@@ -1,11 +1,15 @@
 <template>
-  <div class="selectionbox">
-    <p class="title">{{title}}</p>
-    <p class="amount" v-show="amount">{{formatAmount}}</p>
+  <div class="selectionbox" :class="{active: selected}" @click="clickHandler">
+    <p class="title" :class="{fontactive: selected}">{{title}}</p>
+    <p
+      class="amount"
+      :class="{fontactive: selected, fontactiveamount: selected}"
+      v-show="amount"
+    >{{formatAmount}}</p>
     <div class="icon">
       <svg
         class="green hide"
-        :class="{displayed: isValid && isFilled}"
+        :class="{displayed: selected}"
         xmlns="http://www.w3.org/2000/svg"
         height="24"
         viewBox="0 0 24 24"
@@ -21,7 +25,7 @@
 <script>
 export default {
   name: "SelectionBox",
-  props: ["title", "amount"],
+  props: ["title", "amount", "selected"],
   computed: {
     formatAmount: function() {
       return new Intl.NumberFormat("en-EN", {
@@ -29,6 +33,11 @@ export default {
         currency: "IDR", */
         minimumFractionDigits: 0
       }).format(this.amount);
+    }
+  },
+  methods: {
+    clickHandler: function() {
+      this.$emit("change-value", { title: this.title, amount: this.amount });
     }
   }
 };
@@ -56,6 +65,7 @@ grey-border = #cccccc;
   border: 1px solid grey-border;
   padding: 1rem;
   margin-right: 1rem;
+  cursor: pointer;
 }
 
 .icon {
@@ -65,6 +75,14 @@ grey-border = #cccccc;
 
 .green {
   fill: dark-green;
+}
+
+.hide {
+  display: none;
+}
+
+.displayed {
+  display: block;
 }
 
 .title {
