@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import createPersistedState from 'vuex-persistedstate';
+
 
 Vue.use(Vuex)
 function INITIAL_STATE() {
@@ -49,6 +51,7 @@ export default new Vuex.Store({
   state: {
     formObj: INITIAL_STATE()
   },
+  plugins: [createPersistedState()],
   getters: {
     totalAmountFormated(state) {
       return new Intl.NumberFormat("en-EN", {

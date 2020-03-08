@@ -48,6 +48,9 @@
 export default {
   name: "InputBox",
   props: ["id", "title", "type", "pattern", "dropshipperField"],
+  created() {
+    window.addEventListener("unload", this.checkValidation());
+  },
   data() {
     return {
       isValid: false,
@@ -58,9 +61,23 @@ export default {
   watch: {
     reset(nVal) {
       if (nVal) this.resetField();
+    },
+    state(nVal) {
+      if (nVal) this.isValid;
     }
   },
   computed: {
+    state() {
+      if (this.id == "email") {
+        return this.$store.state.formObj.email.state;
+      } else if (this.id == "number") {
+        return this.$store.state.formObj.number.state;
+      } else if (this.id == "dropshipperName") {
+        return this.$store.state.formObj.dropshipperName.state;
+      } else {
+        return this.$store.state.formObj.dropshipperNumber.state;
+      }
+    },
     reset() {
       return this.$store.state.formObj.reset;
     },
