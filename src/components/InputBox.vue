@@ -44,7 +44,7 @@
 export default {
   name: "InputBox",
   props: ["id", "value", "type", "disabled", "pattern", "dropshipperField"],
-  data: function() {
+  data() {
     return {
       newValue: "",
       isValid: false,
@@ -52,18 +52,18 @@ export default {
     };
   },
   watch: {
-    disabled: function() {
+    disabled() {
       this.dropshipperField ? this.resetField() : "";
     }
   },
   methods: {
-    checkValidation: function() {
+    checkValidation() {
       this.newValue.length ? (this.isFilled = true) : (this.isFilled = false);
       this.pattern.test(this.newValue)
         ? ((this.isValid = true), this.$emit("change-value", this.newValue))
         : ((this.isValid = false), this.$emit("change-value", ""));
     },
-    resetField: function() {
+    resetField() {
       this.newValue = "";
       this.isValid = false;
       this.isFilled = false;
