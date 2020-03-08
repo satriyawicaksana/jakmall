@@ -7,7 +7,7 @@
       :maxlength="maxlength"
       required
       :class="{inputvalid: isValid, inputinvalid: !isValid && isEntered }"
-      v-model="newValue"
+      :value="value"
       @input="reduceChar"
       @focusout="focusOut"
     ></textarea>
@@ -47,23 +47,26 @@ export default {
   name: "TextareaBox",
   data() {
     return {
-      newValue: "",
+      /* newValue: "", */
       remainingChar: 120,
       isValid: false,
       isEntered: false
     };
   },
-  props: ["maxlength", "incorrect"],
+  computed: {
+    value() {
+      return this.$store.state.formObj.address;
+    }
+  },
+  props: ["maxlength"],
   methods: {
-    reduceChar() {
-      this.remainingChar = 120 - this.newValue.length;
-      this.newValue.length ? (this.isValid = true) : (this.isValid = false);
+    reduceChar(e) {
+      this.remainingChar = this.maxlength - e.target.value.length;
+      e.target.value ? (this.isValid = true) : (this.isValid = false);
+      this.$store.commit("setaddress", e.target.value);
     },
     focusOut() {
       this.isEntered = true;
-      this.isValid
-        ? this.$emit("change-value", this.newValue)
-        : this.$emit("change-value", "");
     }
   }
 };
@@ -89,6 +92,7 @@ textarea {
   padding-top: 2.5rem;
   color: black;
   font-family: inter-bold;
+  font-size: 1.5rem;
   outline: none;
   border: 1px solid grey-border;
 }

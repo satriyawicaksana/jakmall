@@ -57,6 +57,9 @@ export default new Vuex.Store({
     setnumber(state, payload) {
       state.formObj.number = payload;
     },
+    setaddress(state, payload) {
+      state.formObj.address = payload;
+    },
     setdropshipperName(state, payload) {
       state.formObj.dropshipperName = payload;
     },

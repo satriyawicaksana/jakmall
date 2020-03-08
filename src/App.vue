@@ -64,11 +64,7 @@
                     :pattern="/^[-+()\d]{6,20}$/"
                     :dropshipperField="false"
                   />
-                  <TextareaBox
-                    :maxlength="120"
-                    @change-value="formObj.address = $event"
-                    :incorrect="formObj.incorrect"
-                  />
+                  <TextareaBox :maxlength="120" />
                 </div>
                 <div class="delivery__bot_right delivery__bot_child">
                   <InputBox
