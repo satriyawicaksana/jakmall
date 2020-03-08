@@ -90,20 +90,23 @@
                 <div class="shipmentfield__container">
                   <SelectionBox
                     title="GO-SEND"
+                    :id="0"
                     amount="15000"
-                    @change-value="shipmentHandler($event, 0)"
+                    type="shipment"
                     :selected="this.formObj.shipmentMethod == 0"
                   />
                   <SelectionBox
                     title="JNE"
+                    :id="1"
                     amount="9000"
-                    @change-value="shipmentHandler($event, 1)"
+                    type="shipment"
                     :selected="this.formObj.shipmentMethod == 1"
                   />
                   <SelectionBox
                     title="Personal Courier"
+                    :id="2"
                     amount="29000"
-                    @change-value="shipmentHandler($event, 2)"
+                    type="shipment"
                     :selected="this.formObj.shipmentMethod == 2"
                   />
                 </div>
@@ -113,20 +116,23 @@
                 <div class="paymentfield__container">
                   <SelectionBox
                     title="e-Wallet"
+                    :id="0"
                     amount="1500000"
-                    @change-value="paymentHandler($event, 0)"
+                    type="payment"
                     :selected="this.formObj.paymentMethod == 0"
                   />
                   <SelectionBox
                     title="Bank Transfer"
+                    :id="1"
                     amount
-                    @change-value="paymentHandler($event, 1)"
+                    type="payment"
                     :selected="this.formObj.paymentMethod == 1"
                   />
                   <SelectionBox
                     title="Virtual Account"
+                    :id="2"
                     amount
-                    @change-value="paymentHandler($event, 2)"
+                    type="payment"
                     :selected="this.formObj.paymentMethod == 2"
                   />
                 </div>
@@ -135,8 +141,10 @@
             <div class="finish" v-show="formObj.activeStep==2">
               <div class="finish__container">
                 <HeaderText title="Thank you" />
-                <p class="finish__container_orderid">Order ID: 12345</p>
-                <p class="finish__container_delivery">Your order will bedlivered today with GO-SEND</p>
+                <p class="finish__container_orderid">Order ID: {{formObj.orderId}}</p>
+                <p
+                  class="finish__container_delivery"
+                >Your order will be delivered {{ formObj.activeStep == 2 ? formObj.summaryBox[0].detail:""}}</p>
                 <button @click="prevStep" class="button-nav">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -227,16 +235,18 @@ export default {
       this.$store.commit("switchCheckbox");
       if (this.formObj.checked)
         this.$store.commit("addToListCost", {
+          id: 1,
           title: "Dropshipping Fee",
           amount: 5900
         });
-      else this.$store.commit("removeFromListCost");
+      else this.$store.commit("removeFromListCost", { id: 1 });
     },
-    setEmail(value) {
-      this.$store.commit("setEmail", value);
+    prevStep() {
+      this.$store.commit("prevStep");
     },
-    prevStep() {},
-    nextStep() {}
+    nextStep() {
+      this.$store.commit("nextStep");
+    }
   }
 };
 </script>
@@ -477,7 +487,7 @@ html, body, input, textarea, button {
 }
 
 .finish__container {
-  width: 350px;
+  width: 390px;
 }
 
 .finish__container_orderid, .finish__container_delivery {

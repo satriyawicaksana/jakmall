@@ -6,13 +6,16 @@
       rows="10"
       :maxlength="maxlength"
       required
-      :class="{inputvalid: isValid, inputinvalid: !isValid && isEntered }"
+      :class="{inputvalid: isValid, inputinvalid: (!isValid && isEntered) || boom }"
       :value="value"
       @input="reduceChar"
       @focusout="focusOut"
     ></textarea>
-    <label for="address" :class="{labelfilled: isValid}">Delivery address</label>
-    <div class="icon" :class="{down: !isValid}">
+    <label
+      for="address"
+      :class="{labelfilled: isValid, fontvalid: isValid, fontinvalid: (!isValid && isEntered) || boom}"
+    >Delivery address</label>
+    <div class="icon" :class="{down: !isValid || boom}">
       <svg
         class="green hide"
         :class="{displayed: isValid}"
@@ -26,7 +29,7 @@
       </svg>
       <svg
         class="orange hide"
-        :class="{displayed: !isValid && isEntered}"
+        :class="{displayed: (!isValid && isEntered) || boom}"
         xmlns="http://www.w3.org/2000/svg"
         height="24"
         viewBox="0 0 24 24"
@@ -47,15 +50,25 @@ export default {
   name: "TextareaBox",
   data() {
     return {
-      /* newValue: "", */
       remainingChar: 120,
       isValid: false,
       isEntered: false
     };
   },
+  watch: {
+    reset(nVal) {
+      if (nVal) this.resetField();
+    }
+  },
   computed: {
+    reset() {
+      return this.$store.state.formObj.reset;
+    },
     value() {
-      return this.$store.state.formObj.address;
+      return this.$store.state.formObj.address.value;
+    },
+    boom() {
+      return this.$store.state.formObj.address.boom;
     }
   },
   props: ["maxlength"],
@@ -63,10 +76,18 @@ export default {
     reduceChar(e) {
       this.remainingChar = this.maxlength - e.target.value.length;
       e.target.value ? (this.isValid = true) : (this.isValid = false);
-      this.$store.commit("setaddress", e.target.value);
+      this.$store.commit("setaddress", {
+        value: e.target.value,
+        state: this.isValid
+      });
     },
     focusOut() {
       this.isEntered = true;
+    },
+    resetField() {
+      this.remainingChar = 120;
+      this.isValid = false;
+      this.isEntered = false;
     }
   }
 };
@@ -115,8 +136,16 @@ label {
   border-color: dark-green;
 }
 
+.fontvalid {
+  color: dark-green;
+}
+
 .inputinvalid {
   border-color: orange;
+}
+
+.fontinvalid {
+  color: orange;
 }
 
 .icon {

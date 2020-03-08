@@ -25,19 +25,41 @@
 <script>
 export default {
   name: "SelectionBox",
-  props: ["title", "amount", "selected"],
+  props: ["title", "id", "amount", "type", "selected"],
   computed: {
     formatAmount() {
       return new Intl.NumberFormat("en-EN", {
-        /* style: "currency",
-        currency: "IDR", */
         minimumFractionDigits: 0
       }).format(this.amount);
     }
   },
   methods: {
     clickHandler() {
-      this.$emit("change-value", { title: this.title, amount: this.amount });
+      if (this.type == "shipment") {
+        const s = this.$store.getters.summaryBoxById(0);
+        const l = this.$store.getters.listCostById(2);
+        const days = ["today", "2 days", "1 day"];
+        if (s != -1) {
+          this.$store.commit("removeFromSummaryBox", { id: 0 });
+          this.$store.commit("addToSummaryBox", {
+            id: 0,
+            title: "Delivery estimation",
+            detail: days[this.id] + " by " + this.title
+          });
+        }
+        if (l != -1) {
+          this.$store.commit("removeFromListCost");
+          this.$store.commit("addToListCost", {
+            id: 2,
+            title: this.title + " shipment",
+            amount: Number(this.amount)
+          });
+        }
+        this.$store.commit("setShipmentMethod", this.id);
+      } else if (this.type == "payment") {
+        this.$store.commit("setPaymentMethod", this.id);
+        this.$store.commit("changeButtonText", "Pay with " + this.title);
+      }
     }
   }
 };

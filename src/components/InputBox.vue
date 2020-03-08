@@ -1,10 +1,15 @@
 <template>
-  <div class="inputbox" :class="{inputvalid: isValid, inputinvalid: !isValid && isFilled}">
+  <div
+    class="inputbox"
+    :class="{inputvalid: isValid, 
+      inputinvalid: (!isValid && (isFilled || isEntered)) || boom }"
+  >
     <input
       :id="id"
       :type="type"
       :value="value"
       @input="checkValidation"
+      @focusout="onFocusOut"
       :disabled="disabled && dropshipperField"
       :class="{inputfilled: isFilled && (!disabled || !dropshipperField)}"
     />
@@ -23,7 +28,7 @@
       </svg>
       <svg
         class="orange hide"
-        :class="{displayed: !isValid && isFilled}"
+        :class="{displayed: (!isValid && (isFilled || isEntered)) || boom}"
         @click="resetField"
         xmlns="http://www.w3.org/2000/svg"
         height="24"
@@ -46,20 +51,39 @@ export default {
   data() {
     return {
       isValid: false,
-      isFilled: false
+      isFilled: false,
+      isEntered: false
     };
   },
+  watch: {
+    reset(nVal) {
+      if (nVal) this.resetField();
+    }
+  },
   computed: {
+    reset() {
+      return this.$store.state.formObj.reset;
+    },
     value() {
-      console.log("id:" + this.id);
       if (this.id == "email") {
-        return this.$store.state.formObj.email;
+        return this.$store.state.formObj.email.value;
       } else if (this.id == "number") {
-        return this.$store.state.formObj.number;
+        return this.$store.state.formObj.number.value;
       } else if (this.id == "dropshipperName") {
-        return this.$store.state.formObj.dropshipperName;
+        return this.$store.state.formObj.dropshipperName.value;
       } else {
-        return this.$store.state.formObj.dropshipperNumber;
+        return this.$store.state.formObj.dropshipperNumber.value;
+      }
+    },
+    boom() {
+      if (this.id == "email") {
+        return this.$store.state.formObj.email.boom;
+      } else if (this.id == "number") {
+        return this.$store.state.formObj.number.boom;
+      } else if (this.id == "dropshipperName") {
+        return this.$store.state.formObj.dropshipperName.boom;
+      } else {
+        return this.$store.state.formObj.dropshipperNumber.boom;
       }
     },
     disabled() {
@@ -70,16 +94,23 @@ export default {
     }
   },
   methods: {
+    onFocusOut() {
+      this.isEntered = true;
+    },
     checkValidation(e) {
       e.target.value.length ? (this.isFilled = true) : (this.isFilled = false);
       this.pattern.test(e.target.value)
         ? (this.isValid = true)
         : (this.isValid = false);
-      this.$store.commit(`set${this.id}`, e.target.value);
+      this.$store.commit(`set${this.id}`, {
+        value: e.target.value,
+        state: this.isValid
+      });
     },
     resetField() {
       this.isValid = false;
       this.isFilled = false;
+      this.isEntered = false;
     }
   }
 };
