@@ -4,12 +4,11 @@
       :id="id"
       :type="type"
       :value="value"
-      v-model="newValue"
-      @focusout="checkValidation"
+      @input="checkValidation"
       :disabled="disabled && dropshipperField"
       :class="{inputfilled: isFilled && (!disabled || !dropshipperField)}"
     />
-    <label :for="id" :class="{labelfilled: isFilled && (!disabled || !dropshipperField) }">{{id}}</label>
+    <label :for="id" :class="{labelfilled: isFilled && (!disabled || !dropshipperField) }">{{title}}</label>
     <div class="icon">
       <svg
         class="green hide"
@@ -37,16 +36,24 @@
         />
       </svg>
     </div>
+    {{value}}
   </div>
 </template>
 
 <script>
 export default {
   name: "InputBox",
-  props: ["id", "value", "type", "disabled", "pattern", "dropshipperField"],
+  props: [
+    "id",
+    "value",
+    "title",
+    "type",
+    "disabled",
+    "pattern",
+    "dropshipperField"
+  ],
   data() {
     return {
-      newValue: "",
       isValid: false,
       isFilled: false
     };
@@ -57,14 +64,15 @@ export default {
     }
   },
   methods: {
-    checkValidation() {
-      this.newValue.length ? (this.isFilled = true) : (this.isFilled = false);
-      this.pattern.test(this.newValue)
-        ? ((this.isValid = true), this.$emit("change-value", this.newValue))
-        : ((this.isValid = false), this.$emit("change-value", ""));
+    checkValidation(e) {
+      e.target.value.length ? (this.isFilled = true) : (this.isFilled = false);
+      this.pattern.test(e.target.value)
+        ? ((this.isValid = true),
+          this.$store.commit(`set${this.id}`, e.target.value))
+        : ((this.isValid = false), this.$store.commit(`set${this.id}`, ""));
     },
     resetField() {
-      this.newValue = "";
+      this.$store.commit(`set${this.id}`, "");
       this.isValid = false;
       this.isFilled = false;
     }
