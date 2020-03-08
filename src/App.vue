@@ -303,7 +303,7 @@ html, body, input, textarea, button {
 
 .container {
   width: 90%;
-  height: 90vh;
+  height: 100%;
   background-color: white;
   margin: 5vh 0;
 }
@@ -392,9 +392,21 @@ html, body, input, textarea, button {
   height: calc(100% - 36px);
 }
 
+@media (max-width: 600px) {
+  .form__container {
+    flexbox(column, flex-start, flex-start);
+  }
+}
+
 .form__container_left {
   width: 70%;
   height: 100%;
+}
+
+@media (max-width: 600px) {
+  .form__container_left {
+    width: 100%;
+  }
 }
 
 .delivery {
@@ -404,6 +416,12 @@ html, body, input, textarea, button {
 
 .delivery__top {
   flexbox(row, space-between, center);
+}
+
+@media (max-width: 600px) {
+  .delivery__top {
+    flexbox(column, flex-start, flex-start);
+  }
 }
 
 .dropshipper {
@@ -462,8 +480,20 @@ html, body, input, textarea, button {
   flexbox();
 }
 
+@media (max-width: 600px) {
+  .delivery__bot {
+    flexbox(column, flex-start, flex-start);
+  }
+}
+
 .delivery__bot_child {
   padding-right: 3rem;
+}
+
+@media (max-width: 600px) {
+  .delivery__bot_child {
+    padding: 0;
+  }
 }
 
 .delivery__bot_left {
@@ -476,9 +506,21 @@ html, body, input, textarea, button {
   height: 100%;
 }
 
+@media (max-width: 600px) {
+  .delivery__bot_right, .delivery__bot_left {
+    width: 100%;
+  }
+}
+
 .shipmentfield__container, .paymentfield__container {
   flexbox(row, flex-start, center);
   margin: 3rem 0 6rem 0;
+}
+
+@media (max-width: 600px) {
+  .shipmentfield__container, .paymentfield__container {
+    flexbox(column, flex-start, flex-start);
+  }
 }
 
 .finish {
@@ -488,6 +530,13 @@ html, body, input, textarea, button {
 
 .finish__container {
   width: 390px;
+}
+
+@media (max-width: 600px) {
+  .finish__container {
+    width: 100%;
+    margin-bottom: 6rem;
+  }
 }
 
 .finish__container_orderid, .finish__container_delivery {
@@ -503,12 +552,29 @@ html, body, input, textarea, button {
   margin-bottom: 6rem;
 }
 
+@media (max-width: 600px) {
+  .finish__container_delivery {
+    margin-bottom: 2rem;
+  }
+}
+
 .form__container_right {
   width: 30%;
   height: 100%;
   padding-left: 2rem;
   border-left: 2px solid ivory;
   flexbox(column, space-between, flex-start);
+}
+
+@media (max-width: 600px) {
+  .form__container_right {
+    border: none;
+    border-top: 2px solid orange;
+    width: 100%;
+    padding: 0;
+    padding-top: 3rem;
+    margin-top: 3rem;
+  }
 }
 
 .summary__top {
@@ -518,6 +584,15 @@ html, body, input, textarea, button {
     color: orange;
     font-size: 2.5rem;
     font-family: inter-bold;
+  }
+}
+
+@media (max-width: 600px) {
+  .summary__top {
+    & h3 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
   }
 }
 

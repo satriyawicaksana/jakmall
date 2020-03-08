@@ -37,4 +37,18 @@ h2:before {
   z-index: -1;
   background-color: grey-accent;
 }
+
+@media (max-width: 600px) {
+  h2:before {
+    height: 5px;
+    top: 1.8rem;
+    width: 200px;
+  }
+
+  h2 {
+    font-size: 2.1rem;
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+  }
+}
 </style>

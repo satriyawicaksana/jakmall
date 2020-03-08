@@ -90,6 +90,13 @@ grey-border = #cccccc;
   cursor: pointer;
 }
 
+@media (max-width: 600px) {
+  .selectionbox {
+    width: 100%;
+    margin: 1rem 0;
+  }
+}
+
 .icon {
   position: absolute;
   right: 1rem;
