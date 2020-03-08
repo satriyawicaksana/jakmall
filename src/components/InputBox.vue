@@ -3,7 +3,6 @@
     <input
       :id="id"
       :type="type"
-      :value="value"
       @input="checkValidation"
       :disabled="disabled && dropshipperField"
       :class="{inputfilled: isFilled && (!disabled || !dropshipperField)}"
@@ -36,22 +35,13 @@
         />
       </svg>
     </div>
-    {{value}}
   </div>
 </template>
 
 <script>
 export default {
   name: "InputBox",
-  props: [
-    "id",
-    "value",
-    "title",
-    "type",
-    "disabled",
-    "pattern",
-    "dropshipperField"
-  ],
+  props: ["id", "title", "type", "disabled", "pattern", "dropshipperField"],
   data() {
     return {
       isValid: false,
@@ -67,9 +57,11 @@ export default {
     checkValidation(e) {
       e.target.value.length ? (this.isFilled = true) : (this.isFilled = false);
       this.pattern.test(e.target.value)
-        ? ((this.isValid = true),
-          this.$store.commit(`set${this.id}`, e.target.value))
-        : ((this.isValid = false), this.$store.commit(`set${this.id}`, ""));
+        ? (this.isValid = true)
+        : (this.isValid = false);
+      this.isValid
+        ? this.$store.commit(`set${this.id}`, e.target.value)
+        : this.$store.commit(`set${this.id}`, "");
     },
     resetField() {
       this.$store.commit(`set${this.id}`, "");
