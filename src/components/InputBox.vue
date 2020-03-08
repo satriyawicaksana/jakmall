@@ -3,6 +3,7 @@
     <input
       :id="id"
       :type="type"
+      :value="value"
       @input="checkValidation"
       :disabled="disabled && dropshipperField"
       :class="{inputfilled: isFilled && (!disabled || !dropshipperField)}"
@@ -41,16 +42,31 @@
 <script>
 export default {
   name: "InputBox",
-  props: ["id", "title", "type", "disabled", "pattern", "dropshipperField"],
+  props: ["id", "title", "type", "pattern", "dropshipperField"],
   data() {
     return {
       isValid: false,
       isFilled: false
     };
   },
-  watch: {
+  computed: {
+    value() {
+      console.log("id:" + this.id);
+      if (this.id == "email") {
+        return this.$store.state.formObj.email;
+      } else if (this.id == "number") {
+        return this.$store.state.formObj.number;
+      } else if (this.id == "dropshipperName") {
+        return this.$store.state.formObj.dropshipperName;
+      } else {
+        return this.$store.state.formObj.dropshipperNumber;
+      }
+    },
     disabled() {
-      this.dropshipperField ? this.resetField() : "";
+      if (!this.$store.state.formObj.checked && this.dropshipperField) {
+        this.resetField();
+      }
+      return !this.$store.state.formObj.checked;
     }
   },
   methods: {
@@ -59,12 +75,9 @@ export default {
       this.pattern.test(e.target.value)
         ? (this.isValid = true)
         : (this.isValid = false);
-      this.isValid
-        ? this.$store.commit(`set${this.id}`, e.target.value)
-        : this.$store.commit(`set${this.id}`, "");
+      this.$store.commit(`set${this.id}`, e.target.value);
     },
     resetField() {
-      this.$store.commit(`set${this.id}`, "");
       this.isValid = false;
       this.isFilled = false;
     }

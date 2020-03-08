@@ -40,16 +40,16 @@ export default new Vuex.Store({
   mutations: {
     switchCheckbox(state) {
       state.formObj.checked = !state.formObj.checked;
+      if (!state.formObj.checked) {
+        state.formObj.dropshipperName = "";
+        state.formObj.dropshipperNumber = "";
+      }
     },
     addToListCost(state, payload) {
       state.formObj.listCost.push(payload);
     },
     removeFromListCost(state) {
       state.formObj.listCost.pop();
-    },
-    resetDropShipperField(state) {
-      state.formObj.dropshipperName = "";
-      state.formObj.dropshipperNumber = "";
     },
     setemail(state, payload) {
       state.formObj.email = payload;

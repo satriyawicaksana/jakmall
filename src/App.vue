@@ -1,41 +1,38 @@
 <template>
   <div id="app">
-    <!-- <input type="checkbox" v-model="formObj.checked" @change="resetField" />
-    <InputBox v-model="formObj.dropshipperName" :disabled="formObj.checked" />
-    <input type="text" v-model="formObj.dropshipperName" :disabled="!formObj.checked" />-->
     <div class="container">
       <div class="stepper">
         <NavigationItem
           :id="navigationStatus[0].id+1"
           :title="navigationStatus[0].title"
-          :active="navigationStatus[0].status"
+          :active="formObj.activeStep >= navigationStatus[0].id"
         />
         <div class="arrow"></div>
         <NavigationItem
           :id="navigationStatus[1].id+1"
           :title="navigationStatus[1].title"
-          :active="navigationStatus[1].status"
+          :active="formObj.activeStep >= navigationStatus[1].id"
         />
         <div class="arrow"></div>
         <NavigationItem
           :id="navigationStatus[2].id+1"
           :title="navigationStatus[2].title"
-          :active="navigationStatus[2].status"
+          :active="formObj.activeStep >= navigationStatus[2].id"
         />
       </div>
       <div class="form">
         <div class="form__navigation">
-          <button @click="prevStep">
+          <button @click="prevStep" class="button-nav" v-show="formObj.activeStep!=2">
             <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" width="16">
               <path d="M0 0h24v24H0V0z" fill="none" />
               <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
             </svg>
-            <p>{{formObj.navigationText[activeStep]}}</p>
+            <p>{{formObj.navigationText[formObj.activeStep]}}</p>
           </button>
         </div>
         <div class="form__container">
           <div class="form__container_left">
-            <div class="delivery" v-show="activeStep==0">
+            <div class="delivery" v-show="formObj.activeStep==0">
               <div class="delivery__top">
                 <HeaderText title="Delivery details" />
                 <div class="dropshipper">
@@ -43,7 +40,7 @@
                     <input
                       type="checkbox"
                       id="dropship"
-                      v-model="formObj.checked"
+                      :checked="formObj.checked"
                       @change="resetField"
                     />
                     <span class="checkmark"></span>
@@ -54,18 +51,16 @@
               <div class="delivery__bot">
                 <div class="delivery__bot_left delivery__bot_child">
                   <InputBox
-                    id="Email"
+                    id="email"
                     type="email"
-                    :disabled="!formObj.checked"
-                    @change-value="formObj.email = $event"
+                    title="Email"
                     :pattern="/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/"
                     :dropshipperField="false"
                   />
                   <InputBox
-                    id="Phone Number"
+                    id="number"
                     type="tel"
-                    :disabled="!formObj.checked"
-                    @change-value="formObj.number = $event"
+                    title="Phone Number"
                     :pattern="/^[-+()\d]{6,20}$/"
                     :dropshipperField="false"
                   />
@@ -77,27 +72,23 @@
                 </div>
                 <div class="delivery__bot_right delivery__bot_child">
                   <InputBox
-                    id="Dropshipper name"
+                    id="dropshipperName"
                     type="text"
-                    :disabled="!formObj.checked"
-                    @change-value="formObj.dropshipperName = $event"
+                    title="Dropshipper name"
                     :pattern="/[\w ]/"
                     :dropshipperField="true"
-                    :incorrect="formObj.incorrect"
                   />
                   <InputBox
-                    id="Dropshipper number"
+                    id="dropshipperNumber"
                     type="tel"
-                    :disabled="!formObj.checked"
-                    @change-value="formObj.dropshipperNumber = $event"
+                    title="Dropshipper phone number"
                     :pattern="/^[-+()\d]{6,20}$/"
                     :dropshipperField="true"
-                    :incorrect="formObj.incorrect"
                   />
                 </div>
               </div>
             </div>
-            <div class="payment" v-show="activeStep==1">
+            <div class="payment" v-show="formObj.activeStep==1">
               <div class="shipmentfield">
                 <HeaderText title="Shipment" />
                 <div class="shipmentfield__container">
@@ -145,34 +136,51 @@
                 </div>
               </div>
             </div>
+            <div class="finish" v-show="formObj.activeStep==2">
+              <div class="finish__container">
+                <HeaderText title="Thank you" />
+                <p class="finish__container_orderid">Order ID: 12345</p>
+                <p class="finish__container_delivery">Your order will bedlivered today with GO-SEND</p>
+                <button @click="prevStep" class="button-nav">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    width="16"
+                  >
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+                  </svg>
+                  <p>{{formObj.navigationText[formObj.activeStep]}}</p>
+                </button>
+              </div>
+            </div>
           </div>
           <div class="form__container_right">
             <div class="summary__top">
               <h3>Summary</h3>
               <p>10 items purchased</p>
               <SummaryBox
-                v-for="item in summaryBox"
+                v-for="item in formObj.summaryBox"
                 :key="item.id"
                 :title="item.title"
                 :detail="item.detail"
               />
-              <!-- <SummaryBox title="Delivery Estimation" detail="today By GO-SEND" />
-              <SummaryBox title="Delivery Estimation" detail="today By GO-SEND" />-->
             </div>
             <div class="summary__bot">
               <ListCost
-                v-for="list in listCost"
+                v-for="list in formObj.listCost"
                 :key="list.title"
                 :title="list.title"
                 :amount="list.amount"
               />
               <div class="totalamount">
                 <p class="totalamount__title">Total</p>
-                <p class="totalamount__amount">{{totalAmount}}</p>
+                <p class="totalamount__amount">{{totalAmountFormated}}</p>
               </div>
               <OrangeButton
-                v-if="activeStep!=2"
-                :title="formObj.buttonText[activeStep]"
+                v-if="formObj.activeStep!=2"
+                :title="formObj.buttonText[formObj.activeStep]"
                 @next-step="nextStep"
               />
             </div>
@@ -184,6 +192,7 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from "vuex";
 import InputBox from "./components/InputBox";
 import NavigationItem from "./components/NavigationItem";
 import SummaryBox from "./components/SummaryBox";
@@ -204,154 +213,34 @@ export default {
     TextareaBox,
     SelectionBox
   },
-  data: function() {
+  data() {
     return {
-      activeStep: 1,
       navigationStatus: [
-        { id: 0, title: "Delivery", status: true },
-        { id: 1, title: "Payment", status: false },
-        { id: 2, title: "Finish", status: false }
-      ],
-      formObj: {
-        checked: true,
-        incorrect: false,
-        email: "",
-        number: "",
-        address: "",
-        dropshipperName: "",
-        dropshipperNumber: "",
-        shipmentMethod: -1,
-        paymentMethod: -1,
-        navigationText: ["Back to cart", "Back to delivery", "Go to homepage"],
-        buttonText: ["Continue to Payment", "Pay with e-Wallet"]
-      },
-      listCost: [
-        { id: 1, title: "Cost of goods", amount: 500000 },
-        { id: 2, title: "Dropshipping Fee", amount: 5900 }
-      ],
-      summaryBox: []
+        { id: 0, title: "Delivery" },
+        { id: 1, title: "Payment" },
+        { id: 2, title: "Finish" }
+      ]
     };
   },
   computed: {
-    totalAmount: function() {
-      return new Intl.NumberFormat("en-EN", {
-        /* style: "currency",
-        currency: "IDR", */
-        minimumFractionDigits: 0
-      }).format(this.listCost.reduce((a, b) => a + b.amount, 0));
-    }
+    ...mapState(["formObj"]),
+    ...mapGetters(["totalAmountFormated"])
   },
   methods: {
-    resetForm: function() {
-      // MASIH SALAH GAK BISA RESET INPUT VALUE NYA
-      this.activeStep = 0;
-      this.listCost = [
-        { title: "Cost of goods", amount: 500000 },
-        { title: "Dropshipping Fee", amount: 5900 }
-      ];
-      this.formObj = {
-        checked: true,
-        incorrect: false,
-        email: "",
-        number: "",
-        address: "",
-        dropshipperName: "",
-        dropshipperNumber: "",
-        navigationText: ["Back to cart", "Back to delivery", "Go to homepage"],
-        buttonText: ["Continue to Payment", "Pay with e-Wallet"]
-      };
-    },
-    resetField: function() {
+    resetField() {
+      this.$store.commit("switchCheckbox");
       if (this.formObj.checked)
-        this.listCost.push({ title: "Dropshipping Fee", amount: 5900 });
-      else this.listCost.pop();
-      this.formObj.dropshipperName = "";
-      this.formObj.dropshipperNumber = "";
+        this.$store.commit("addToListCost", {
+          title: "Dropshipping Fee",
+          amount: 5900
+        });
+      else this.$store.commit("removeFromListCost");
     },
-    shipmentHandler: function(e, shipmentMethod) {
-      let shipmentIndex = this.listCost.findIndex(data => data.id == 3);
-      let shipmentIndexSummary = this.summaryBox.findIndex(
-        data => data.id == 0
-      );
-      shipmentIndex != -1
-        ? (this.listCost.splice(shipmentIndex, 1),
-          this.listCost.push({
-            id: 3,
-            title: e.title + " shipment",
-            amount: Number(e.amount)
-          }))
-        : this.listCost.push({
-            id: 3,
-            title: e.title + " shipment",
-            amount: Number(e.amount)
-          });
-
-      this.formObj.shipmentMethod = shipmentMethod;
-      let newDeliveryObj = { id: 0, title: "Delivery estimation" };
-      if (shipmentIndexSummary != -1) {
-        this.summaryBox.splice(shipmentIndexSummary, 1);
-        if (shipmentMethod == 0) {
-          newDeliveryObj.detail = "today by GO-SEND";
-          this.summaryBox.push(newDeliveryObj);
-        } else if (shipmentMethod == 1) {
-          newDeliveryObj.detail = "2 days by JNE";
-          this.summaryBox.push(newDeliveryObj);
-        } else if (shipmentMethod == 2) {
-          newDeliveryObj.detail = "1 day by Personal Courier";
-          this.summaryBox.push(newDeliveryObj);
-        }
-      } else {
-        this.summaryBox.splice(shipmentIndexSummary, 1);
-        if (shipmentMethod == 0) {
-          newDeliveryObj.detail = "today by GO-SEND";
-          this.summaryBox.push(newDeliveryObj);
-        } else if (shipmentMethod == 1) {
-          newDeliveryObj.detail = "2 days by JNE";
-          this.summaryBox.push(newDeliveryObj);
-        } else if (shipmentMethod == 2) {
-          newDeliveryObj.detail = "1 day by Personal Courier";
-          this.summaryBox.push(newDeliveryObj);
-        }
-      }
+    setEmail(value) {
+      this.$store.commit("setEmail", value);
     },
-    paymentHandler: function(e, paymentMethod) {
-      this.formObj.paymentMethod = paymentMethod;
-      let newPaymentObj = { id: 1, title: "Payment method" };
-      newPaymentObj.detail = e.title;
-      let paymentIndexSummary = this.summaryBox.findIndex(data => data.id == 1);
-      if (paymentIndexSummary != -1) {
-        this.summaryBox.splice(paymentIndexSummary, 1);
-        this.summaryBox.push(newPaymentObj);
-      } else {
-        this.summaryBox.push(newPaymentObj);
-      }
-      this.formObj.buttonText[1] = "Pay with " + e.title;
-    },
-    nextStep: function() {
-      /* 
-        CHECK VALIDITY LATER
-
-      this.formObj.address
-        ? (this.formObj.incorrect = false)
-        : (this.formObj.incorrect = true); */
-      /* this.formObj.checked &&
-      !this.formObj.dropshipperName &&
-      !this.formObj.dropshipperNumber
-        ? (this.formObj.incorrect = true)
-        : (this.formObj.incorrect = false); */
-      this.activeStep++;
-      this.navigationStatus[this.activeStep].status = true;
-    },
-    prevStep: function() {
-      this.navigationStatus[this.activeStep].status = false;
-      // Menu masih salah saat kembali page 1
-      this.activeStep
-        ? this.activeStep == 2
-          ? // MASIH SALAH GAK BISA RESET INPUT VALUE NYA
-            this.resetForm()
-          : this.activeStep--
-        : "";
-    }
+    prevStep() {},
+    nextStep() {}
   }
 };
 </script>
@@ -470,17 +359,19 @@ html, body, input, textarea, button {
 }
 
 .form__navigation {
-  & button {
-    flexbox(row, flex-start, center);
-    padding: 1rem 0;
-    border: none;
-    background: transparent;
-    cursor: pointer;
+  height: 36px;
+}
 
-    & svg {
-      margin-right: 1rem;
-      fill: grey-font;
-    }
+.button-nav {
+  flexbox(row, flex-start, center);
+  padding: 1rem 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+
+  & svg {
+    margin-right: 1rem;
+    fill: grey-font;
   }
 }
 
@@ -582,6 +473,28 @@ html, body, input, textarea, button {
 .shipmentfield__container, .paymentfield__container {
   flexbox(row, flex-start, center);
   margin: 3rem 0 6rem 0;
+}
+
+.finish {
+  height: 100%;
+  flexbox(row, center, center);
+}
+
+.finish__container {
+  width: 350px;
+}
+
+.finish__container_orderid, .finish__container_delivery {
+  font-size: 1.4rem;
+  margin: 1rem 0;
+}
+
+.finish__container_orderid {
+  color: black;
+}
+
+.finish__container_delivery {
+  margin-bottom: 6rem;
 }
 
 .form__container_right {
