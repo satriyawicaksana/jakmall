@@ -6,14 +6,14 @@
       rows="10"
       :maxlength="maxlength"
       required
-      :class="{inputvalid: isValid, inputinvalid: (!isValid && isEntered) || boom }"
+      :class="{inputvalid: isValid || state, inputinvalid: (!isValid && isEntered) || boom }"
       :value="value"
       @input="reduceChar"
       @focusout="focusOut"
     ></textarea>
     <label
       for="address"
-      :class="{labelfilled: isValid, fontvalid: isValid, fontinvalid: (!isValid && isEntered) || boom}"
+      :class="{labelfilled: isValid || state, fontvalid: isValid || state, fontinvalid: (!isValid && isEntered) || boom }"
     >Delivery address</label>
     <div class="icon" :class="{down: !isValid || boom}">
       <svg
@@ -61,6 +61,12 @@ export default {
     }
   },
   computed: {
+    filled() {
+      return this.$store.state.formObj.address.value;
+    },
+    state() {
+      return this.$store.state.formObj.address.state;
+    },
     reset() {
       return this.$store.state.formObj.reset;
     },

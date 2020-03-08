@@ -303,7 +303,7 @@ html, body, input, textarea, button {
 
 .container {
   width: 90%;
-  height: 100%;
+  min-height: 90vh;
   background-color: white;
   margin: 5vh 0;
 }
@@ -477,7 +477,7 @@ html, body, input, textarea, button {
 .delivery__bot {
   height: calc(100% - 42px);
   padding-top: 2rem;
-  flexbox();
+  flexbox(row, flex-start, flex-start);
 }
 
 @media (max-width: 600px) {
@@ -560,7 +560,7 @@ html, body, input, textarea, button {
 
 .form__container_right {
   width: 30%;
-  height: 100%;
+  height: 75vh;
   padding-left: 2rem;
   border-left: 2px solid ivory;
   flexbox(column, space-between, flex-start);
@@ -571,6 +571,7 @@ html, body, input, textarea, button {
     border: none;
     border-top: 2px solid orange;
     width: 100%;
+    height: 100%;
     padding: 0;
     padding-top: 3rem;
     margin-top: 3rem;

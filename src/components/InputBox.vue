@@ -1,8 +1,8 @@
 <template>
   <div
     class="inputbox"
-    :class="{inputvalid: isValid, 
-      inputinvalid: (!isValid && (isFilled || isEntered)) || boom }"
+    :class="{inputvalid: isValid || state, 
+      inputinvalid: (!isValid && (isFilled || isEntered)) || boom || (!state && filled) }"
   >
     <input
       :id="id"
@@ -11,9 +11,12 @@
       @input="checkValidation"
       @focusout="onFocusOut"
       :disabled="disabled && dropshipperField"
-      :class="{inputfilled: isFilled && (!disabled || !dropshipperField)}"
+      :class="{inputfilled: filled || isFilled && (!disabled || !dropshipperField)}"
     />
-    <label :for="id" :class="{labelfilled: isFilled && (!disabled || !dropshipperField) }">{{title}}</label>
+    <label
+      :for="id"
+      :class="{labelfilled: filled || isFilled && (!disabled || !dropshipperField) }"
+    >{{title}}</label>
     <div class="icon">
       <svg
         class="green hide"
@@ -48,9 +51,6 @@
 export default {
   name: "InputBox",
   props: ["id", "title", "type", "pattern", "dropshipperField"],
-  created() {
-    window.addEventListener("unload", this.checkValidation());
-  },
   data() {
     return {
       isValid: false,
@@ -59,11 +59,8 @@ export default {
     };
   },
   watch: {
-    reset(nVal) {
-      if (nVal) this.resetField();
-    },
-    state(nVal) {
-      if (nVal) this.isValid;
+    reset() {
+      this.resetField();
     }
   },
   computed: {
@@ -76,6 +73,17 @@ export default {
         return this.$store.state.formObj.dropshipperName.state;
       } else {
         return this.$store.state.formObj.dropshipperNumber.state;
+      }
+    },
+    filled() {
+      if (this.id == "email") {
+        return this.$store.state.formObj.email.value;
+      } else if (this.id == "number") {
+        return this.$store.state.formObj.number.value;
+      } else if (this.id == "dropshipperName") {
+        return this.$store.state.formObj.dropshipperName.value;
+      } else {
+        return this.$store.state.formObj.dropshipperNumber.value;
       }
     },
     reset() {
