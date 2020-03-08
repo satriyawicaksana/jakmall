@@ -10,7 +10,7 @@ export default {
   name: "ListCost",
   props: ["title", "amount"],
   computed: {
-    formatAmount: function() {
+    formatAmount() {
       return new Intl.NumberFormat("en-EN", {
         /* style: "currency",
         currency: "IDR", */

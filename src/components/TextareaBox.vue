@@ -45,7 +45,7 @@
 <script>
 export default {
   name: "TextareaBox",
-  data: function() {
+  data() {
     return {
       newValue: "",
       remainingChar: 120,
@@ -55,11 +55,11 @@ export default {
   },
   props: ["maxlength", "incorrect"],
   methods: {
-    reduceChar: function() {
+    reduceChar() {
       this.remainingChar = 120 - this.newValue.length;
       this.newValue.length ? (this.isValid = true) : (this.isValid = false);
     },
-    focusOut: function() {
+    focusOut() {
       this.isEntered = true;
       this.isValid
         ? this.$emit("change-value", this.newValue)

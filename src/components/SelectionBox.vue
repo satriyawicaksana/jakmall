@@ -27,7 +27,7 @@ export default {
   name: "SelectionBox",
   props: ["title", "amount", "selected"],
   computed: {
-    formatAmount: function() {
+    formatAmount() {
       return new Intl.NumberFormat("en-EN", {
         /* style: "currency",
         currency: "IDR", */
@@ -36,7 +36,7 @@ export default {
     }
   },
   methods: {
-    clickHandler: function() {
+    clickHandler() {
       this.$emit("change-value", { title: this.title, amount: this.amount });
     }
   }
